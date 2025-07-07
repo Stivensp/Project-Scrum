@@ -1,0 +1,13 @@
+[
+  {
+    "id": 0,
+    "user": "Ponscio",
+    "password": "1234",
+    "post": [
+      {
+        "titulo": "Pablo explota a los juanes",
+        "contenido": "No me parece bien que pablo explote a los juanes y los haga trabajar mas sin paga y sin descanso"
+      }
+    ]
+  }
+]
