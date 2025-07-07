@@ -21,6 +21,8 @@ userMenu = """
     1. 📃 Listado de Usuarios
     2. ❌ Cerrar Sesion
     3. 📝 Crear Publicación
+    4. Ver pulicaciones
+    
 
 """
 
@@ -256,6 +258,55 @@ def crear_publicacion():
     guardar_datos(data)
     printe(f"✅ Publicación creada exitosamente para el usuario '{usuario['user']}'.")
 
+def ver_publicaciones():
+    """
+    Muestra la lista de usuarios, permite buscar un usuario, y muestra sus publicaciones.
+    Permite seleccionar una publicación por título para ver su contenido.
+    """
+    clearConsole()
+    data = getJson()
+    print("📃 Ver Publicaciones")
+    print("------------------------")
+    
+    # Mostrar lista de usuarios
+    for i in data:
+        print(f"    🗿 - {i['user']}")
+        print("------------------------")
+    
+    # Buscar usuario
+    usuario_buscado = input("Ingrese el nombre del usuario a buscar: ").strip()
+    usuario = next((u for u in data if u["user"] == usuario_buscado), None)
+
+    if usuario:
+        clearConsole()
+        print(f"👤 Perfil del usuario: {usuario['user']}")
+        print("------------------------")
+        
+        # Mostrar títulos de publicaciones
+        if usuario["post"]:
+            print("📄 Publicaciones disponibles:")
+            for idx, post in enumerate(usuario["post"], start=1):
+                print(f"  {idx}. 📝 Título: {post['titulo']}")
+            print("------------------------")
+            
+            # Seleccionar publicación por título
+            titulo_buscado = input("Ingrese el título de la publicación que desea ver: ").strip()
+            publicacion = next((p for p in usuario["post"] if p["titulo"] == titulo_buscado), None)
+            
+            if publicacion:
+                clearConsole()
+                print(f"📝 Publicación seleccionada:")
+                print(f"  Título: {publicacion['titulo']}")
+                print(f"  Contenido: {publicacion['contenido']}")
+            else:
+                printe("❌ No se encontró una publicación con ese título.")
+        else:
+            printe("❔ Este usuario no tiene publicaciones.")
+    else:
+        printe("❌ Usuario no encontrado.")
+    
+    input("Presione Enter para continuar...")
+
 def viewUserMenu():
     while True:
         clearConsole()
@@ -269,6 +320,8 @@ def viewUserMenu():
             break
         elif op == "3":
             crear_publicacion()  # Llamar a la nueva función
+        elif op == "4":
+            ver_publicaciones()
         else:
             printe("Invalid option, please try again.")
 
