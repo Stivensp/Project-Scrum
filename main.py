@@ -343,7 +343,7 @@ def viewUserMenu():
         if op == "1":
             listarUsers()
         elif op == "2":
-            printe("👋 Sesión cerrada.")
+            printe("👋 Sesión cerrada bye.")
             break
         elif op == "3":
             crear_publicacion()
