@@ -6,3 +6,5 @@
 # No(4) Creacion branch feature/crear-publicacion
 
 # No(5) Creacion branch feature/ver-publicacion
+
+# No(0) Creacion branch feature/interaccion-publicaciones
