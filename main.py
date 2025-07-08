@@ -20,6 +20,7 @@ userMenu = """
     3. 📝 Crear Publicación
     4. 📖 Ver Publicaciones
     5. ❤️  Dar Like a Publicación
+    6. 💬 Comentar Publicación
 """
 
 # UTILS
@@ -212,6 +213,15 @@ def ver_publicaciones():
         print(f"📌 Título: {publicacion['titulo']}")
         print(f"📖 Contenido: {publicacion['contenido']}")
         print(f"❤️ Likes: {publicacion['likes']}")
+        
+        # Mostrar comentarios si existen
+        if "comentarios" in publicacion and publicacion["comentarios"]:
+            print(f"\n💬 Comentarios ({len(publicacion['comentarios'])}):")
+            print("------------------------")
+            for comentario in publicacion["comentarios"]:
+                print(f"🗿 {comentario['usuario']}: {comentario['comentario']}")
+        else:
+            print("\n💬 No hay comentarios aún.")
     else:
         printe("❌ Publicación no encontrada.")
     input("Continuar...")
@@ -264,6 +274,66 @@ def dar_like():
     printe("✅ Diste like a la publicación.")
     input("Continuar...")
 
+def comentar_publicacion():
+    global actualUser
+    if actualUser is None:
+        printe("❌ No hay usuario logueado.")
+        input("Continuar...")
+        return
+
+    data = getJson()
+    usuario_actual = next((u for u in data if u["id"] == actualUser), None)
+    
+    clearConsole()
+    print("💬 Comentar Publicación")
+    for u in data:
+        print(f"🗿 {u['user']}")
+    print("------------------------")
+    nombre = input("¿A qué usuario deseas comentar?: ").strip()
+
+    usuario = next((u for u in data if u["user"] == nombre), None)
+    if not usuario:
+        printe("❌ Usuario no encontrado.")
+        input("Continuar...")
+        return
+
+    if not usuario["post"]:
+        printe("❔ Este usuario no tiene publicaciones.")
+        input("Continuar...")
+        return
+
+    for idx, post in enumerate(usuario["post"], 1):
+        print(f"{idx}. 📝 {post['titulo']} (❤️ {post.get('likes', 0)} likes)")
+    print("------------------------")
+    titulo = input("Título exacto de la publicación: ").strip()
+
+    publicacion = next((p for p in usuario["post"] if p["titulo"] == titulo), None)
+    if not publicacion:
+        printe("❌ Publicación no encontrada.")
+        input("Continuar...")
+        return
+
+    comentario = input("Escribe tu comentario: ").strip()
+    if not comentario:
+        printe("❌ El comentario no puede estar vacío.")
+        input("Continuar...")
+        return
+
+    # Inicializar la lista de comentarios si no existe
+    if "comentarios" not in publicacion:
+        publicacion["comentarios"] = []
+
+    # Agregar el comentario con información del usuario
+    nuevo_comentario = {
+        "usuario": usuario_actual["user"],
+        "comentario": comentario
+    }
+    publicacion["comentarios"].append(nuevo_comentario)
+
+    setJson(data)
+    printe("✅ Comentario agregado exitosamente.")
+    input("Continuar...")
+
 # MENU DE USUARIO
 def viewUserMenu():
     while True:
@@ -281,6 +351,8 @@ def viewUserMenu():
             ver_publicaciones()
         elif op == "5":
             dar_like()
+        elif op == "6":
+            comentar_publicacion()
         else:
             print("❌ Opción inválida.")
 
